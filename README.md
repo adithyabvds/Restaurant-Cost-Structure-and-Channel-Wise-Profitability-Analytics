@@ -3,13 +3,13 @@
 ## Live Demo & Project Video
 
 ### Streamlit Dashboard
-🔗 https://restaurant-profitability-dashboard.streamlit.app/
+🔗 https://skycity-auckland.streamlit.app/
 
 ### Project Demonstration Video
-🎥 https://youtu.be/YOUR_VIDEO_LINK
+🎥 https://youtu.be/olAQkgDS4Xs?si=4Aomh4sGaghO5m89
 
 ### Research Report
-🔗 https://doi.org/YOUR_ZENODO_DOI
+🔗 https://doi.org/10.5281/zenodo.20413403
 
 ---
 
