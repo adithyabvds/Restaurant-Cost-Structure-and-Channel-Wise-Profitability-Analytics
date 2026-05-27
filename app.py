@@ -232,8 +232,6 @@ def load_models():
         if fpath.exists():
             try:
                 loaded[key] = joblib.load(fpath)
-            except (ModuleNotFoundError, ImportError) as e:
-                loaded.setdefault("_missing_models", {})[key] = f"{fname}: {e}"
             except Exception as e:
                 st.warning(f"⚠️ Could not load {fname}: {e}")
     return loaded
@@ -349,64 +347,6 @@ if not sel_channels:
     st.warning("Select at least one channel to display channel-based analysis.")
     st.stop()
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-:root {
-    --bg:           #0B0F17;
-    --surface:      #111827;
-    --surface2:     #1a2235;
-    --border:       rgba(255,255,255,0.08);
-    --gold:         #F5C518;
-    --gold2:        #e8a000;
-    --teal:         #00C9A7;
-    --teal2:        #0097a7;
-    --red:          #FF5252;
-    --red2:         #b71c1c;
-    --blue:         #448AFF;
-    --blue2:        #1565c0;
-    --purple:       #CE93D8;
-    --text1:        #F0F4FF;
-    --text2:        #8892a4;
-}
-
-html, body, .stApp {
-    background-color: var(--bg) !important;
-    font-family: 'Inter', sans-serif;
-    color: var(--text1);
-}
-
-#MainMenu, footer, header { visibility: hidden; }
-
-/* ── sidebar ── */
-[data-testid="stSidebar"] {
-    background: var(--surface) !important;
-    border-right: 1px solid var(--border);
-}
-
-[data-testid="stSidebar"] * {
-    color: var(--text1) !important;
-}
-
-/* ===== MAKE SIDEBAR NON-CLOSABLE ===== */
-[data-testid="collapsedControl"] {
-    display: none !important;
-}
-
-button[kind="header"] {
-    display: none !important;
-}
-
-[data-testid="stSidebar"][aria-expanded="false"] {
-    min-width: 320px !important;
-    max-width: 320px !important;
-    transform: translateX(0%) !important;
-}
-/* ===================================== */
-
-/* rest of your existing CSS below... */
-</style>
 # ─────────────────────────────────────────────
 #  PAGE: EXECUTIVE OVERVIEW
 # ─────────────────────────────────────────────
@@ -434,7 +374,7 @@ if selected == "Executive Overview":
             hole=0.62,
         )
         apply_layout(fig, 340)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
@@ -450,7 +390,7 @@ if selected == "Executive Overview":
         )
         fig2.update_layout(coloraxis_showscale=False)
         apply_layout(fig2, 340)
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     col3, col4 = st.columns(2)
@@ -470,7 +410,7 @@ if selected == "Executive Overview":
                                marker_color=["#006d59","#1a4e9e","#8a6e00","#6a3d7a"], opacity=0.85))
         fig3.update_layout(barmode="group", title="Total Revenue vs Net Profit by Channel")
         apply_layout(fig3, 340)
-        st.plotly_chart(fig3, width="stretch")
+        st.plotly_chart(fig3, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col4:
@@ -486,7 +426,7 @@ if selected == "Executive Overview":
         )
         fig4.update_layout(coloraxis_showscale=False)
         apply_layout(fig4, 340)
-        st.plotly_chart(fig4, width="stretch")
+        st.plotly_chart(fig4, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
@@ -518,7 +458,7 @@ elif selected == "Channel Profitability":
         fig.add_hline(y=0, line_dash="dash", line_color="rgba(255,82,82,0.6)", line_width=1)
         fig.update_layout(title="Net Profit Margin by Channel (%)", yaxis_ticksuffix="%")
         apply_layout(fig, 360)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
@@ -532,7 +472,7 @@ elif selected == "Channel Profitability":
         fig2.add_hline(y=0, line_dash="dash", line_color="rgba(255,82,82,0.6)", line_width=1)
         fig2.update_layout(title="Net Profit per Order by Channel ($)")
         apply_layout(fig2, 360)
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Per-cuisine channel margin heatmap
@@ -559,7 +499,7 @@ elif selected == "Channel Profitability":
         text_auto=".1f",
     )
     fig3.update_layout(**PLOT_LAYOUT, height=340, margin=dict(l=10,r=10,t=40,b=10))
-    st.plotly_chart(fig3, width="stretch")
+    st.plotly_chart(fig3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Profit comparison box plots
@@ -575,7 +515,7 @@ elif selected == "Channel Profitability":
     )
     fig4.add_hline(y=0, line_dash="dash", line_color="rgba(255,82,82,0.6)")
     apply_layout(fig4, 380)
-    st.plotly_chart(fig4, width="stretch")
+    st.plotly_chart(fig4, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
@@ -658,7 +598,7 @@ elif selected == "Cost Waterfall":
     ))
     fig.update_layout(title=f"{ch_sel} — Revenue Waterfall to Net Profit")
     apply_layout(fig, 450, legend=False)
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Cost composition stacked bar by cuisine
@@ -679,7 +619,7 @@ elif selected == "Cost Waterfall":
         color_discrete_sequence=["#FF5252","#F5C518","#448AFF","#CE93D8"],
     )
     apply_layout(fig2, 380)
-    st.plotly_chart(fig2, width="stretch")
+    st.plotly_chart(fig2, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
@@ -708,7 +648,7 @@ elif selected == "Cuisine & Segment":
             labels={"AvgMargin":"Avg Margin %","AvgProfit":"Avg Net Profit $"},
         )
         apply_layout(fig, 360)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
@@ -726,7 +666,7 @@ elif selected == "Cuisine & Segment":
             text_auto=".1f",
         )
         apply_layout(fig2, 360)
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Segment × Cuisine profit heatmap
@@ -741,7 +681,7 @@ elif selected == "Cuisine & Segment":
         text_auto=".1f",
     )
     fig3.update_layout(**PLOT_LAYOUT, height=300, margin=dict(l=10,r=10,t=40,b=10))
-    st.plotly_chart(fig3, width="stretch")
+    st.plotly_chart(fig3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Channel share by segment
@@ -756,7 +696,7 @@ elif selected == "Cuisine & Segment":
     )
     fig4.update_layout(yaxis_tickformat=".0%")
     apply_layout(fig4, 360)
-    st.plotly_chart(fig4, width="stretch")
+    st.plotly_chart(fig4, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
@@ -809,7 +749,7 @@ elif selected == "Commission Impact":
                               marker_color="#F5C518"))
         fig.update_layout(barmode="group", title="Actual vs Simulated Net Profit by Channel")
         apply_layout(fig, 360)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Sensitivity: commission rate vs UberEats margin
@@ -834,7 +774,7 @@ elif selected == "Commission Impact":
         xaxis_title="Commission Rate (%)", yaxis_title="Profit Margin (%)",
     )
     apply_layout(fig2, 360)
-    st.plotly_chart(fig2, width="stretch")
+    st.plotly_chart(fig2, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
@@ -855,7 +795,7 @@ elif selected == "Cluster Intelligence":
                      title="Cluster Distribution",
                      color_discrete_sequence=["#00C9A7","#448AFF","#F5C518","#CE93D8"])
         apply_layout(fig, 340)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
@@ -876,7 +816,7 @@ elif selected == "Cluster Intelligence":
                            title="Cluster Profile Radar (normalised)")
         fig2.update_layout(**PLOT_LAYOUT, height=340, showlegend=True,
                            margin=dict(l=10,r=10,t=40,b=10))
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Cluster × profitability scatter
@@ -891,7 +831,7 @@ elif selected == "Cluster Intelligence":
         opacity=0.75,
     )
     apply_layout(fig3, 440)
-    st.plotly_chart(fig3, width="stretch")
+    st.plotly_chart(fig3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Cluster summary table
@@ -914,7 +854,7 @@ elif selected == "Cluster Intelligence":
 
     st.dataframe(
         tbl.style.map(cluster_table_style, subset=["Avg Margin (%)", "High Risk (%)"]),
-        width="stretch", hide_index=True,
+        use_container_width=True, hide_index=True,
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -947,7 +887,7 @@ elif selected == "Financial Risk":
         )
         fig.add_hline(y=0, line_dash="dash", line_color="rgba(255,82,82,0.7)")
         apply_layout(fig, 360)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col2:
@@ -959,7 +899,7 @@ elif selected == "Financial Risk":
             color_discrete_map={"High Risk":"#FF5252","Low Risk":"#00C9A7"},
         )
         apply_layout(fig2, 360)
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Margin distribution
@@ -972,7 +912,7 @@ elif selected == "Financial Risk":
     )
     fig3.add_vline(x=0, line_dash="dash", line_color="rgba(255,82,82,0.8)")
     apply_layout(fig3, 340)
-    st.plotly_chart(fig3, width="stretch")
+    st.plotly_chart(fig3, use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
     # Bottom 10 restaurants
@@ -986,7 +926,7 @@ elif selected == "Financial Risk":
     st.dataframe(
         worst.style.map(lambda v: "color:#FF5252;" if isinstance(v,(int,float)) and v < 0 else "",
                         subset=["Net Profit ($)","Margin (%)"]),
-        width="stretch", hide_index=True,
+        use_container_width=True, hide_index=True,
     )
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1018,7 +958,7 @@ elif selected == "AI Model Center":
         )
         fig.update_layout(yaxis_range=[0.75, 1.0])
         apply_layout(fig, 340)
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         fig2 = go.Figure()
@@ -1036,21 +976,13 @@ elif selected == "AI Model Center":
             title="Architecture Radar",
         )
         fig2.update_layout(**PLOT_LAYOUT, height=340, margin=dict(l=10,r=10,t=40,b=10))
-        st.plotly_chart(fig2, width="stretch")
+        st.plotly_chart(fig2, use_container_width=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
 
     # ── Live Prediction ──
     st.markdown("### 🤖 Live Profitability Prediction Engine")
     st.markdown('<div class="card">', unsafe_allow_html=True)
-
-    model_map = {
-        "Random Forest":        "rf",
-        "XGBoost":              "xgb",
-        "LightGBM":             "lgbm",
-        "Logistic Regression":  "lr",
-    }
-    available_model_names = [name for name, key in model_map.items() if key in models]
 
     SCALER_COLS = [
         "MonthlyOrders", "AOV", "InStoreRevenue", "UberEatsRevenue",
@@ -1092,10 +1024,10 @@ elif selected == "AI Model Center":
 
         sel_models = st.multiselect(
             "Models to Run",
-            available_model_names,
-            default=available_model_names[:3],
+            ["Random Forest","XGBoost","LightGBM","Logistic Regression"],
+            default=["Random Forest","XGBoost","LightGBM"],
         )
-        submitted = st.form_submit_button("🚀 Run Prediction Engine", width="stretch")
+        submitted = st.form_submit_button("🚀 Run Prediction Engine", use_container_width=True)
 
     if submitted:
         # Build derived features
@@ -1155,6 +1087,13 @@ elif selected == "AI Model Center":
         expected_cols = list(getattr(scaler, "feature_names_in_", SCALER_COLS)) if scaler else SCALER_COLS
         input_df = pd.DataFrame([feat_row]).reindex(columns=expected_cols, fill_value=0)
 
+        model_map = {
+            "Random Forest":        "rf",
+            "XGBoost":              "xgb",
+            "LightGBM":             "lgbm",
+            "Logistic Regression":  "lr",
+        }
+
         preds = {}
         try:
             scaled = scaler.transform(input_df) if scaler else input_df.values
@@ -1178,6 +1117,7 @@ elif selected == "AI Model Center":
 
             result_cols = st.columns(len(preds) + 1)
             for i, (name, p) in enumerate(preds.items()):
+                card_color = "#00C9A7" if p >= 0.5 else "#FF5252"
                 with result_cols[i]:
                     st.markdown(f"""
                     <div style='background:#1a2235;border:1px solid rgba(255,255,255,0.08);
@@ -1185,7 +1125,7 @@ elif selected == "AI Model Center":
                         <p style='font-size:.7rem;color:#8892a4;text-transform:uppercase;
                                   letter-spacing:.08em;margin:0;'>{name}</p>
                         <p style='font-size:2rem;font-weight:700;margin:8px 0 0;
-                                  color:{"#00C9A7" if p>=0.5 else "#FF5252"};'>
+                                  color:{card_color};'>
                             {p*100:.1f}%
                         </p>
                     </div>""", unsafe_allow_html=True)
@@ -1243,6 +1183,6 @@ elif selected == "AI Model Center":
             )
             fig_sim.add_hline(y=0, line_dash="dash", line_color="rgba(255,82,82,0.7)")
             apply_layout(fig_sim, 320, legend=False)
-            st.plotly_chart(fig_sim, width="stretch")
+            st.plotly_chart(fig_sim, use_container_width=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
